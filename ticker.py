@@ -26,7 +26,7 @@ def get_arguments ():
         help="seconds between ticker polls (default: %(default)s [s])")
     parser.add_argument("-a", "--pub-address",
         default='tcp://*:8178',
-        help="tick publication address (default: %(default)s)")
+        help="ticker publication address (default: %(default)s)")
     parser.add_argument("-u", "--ticker-url",
         default='https://www.bitstamp.net/api/ticker/',
         help="API (default: %(default)s)")
