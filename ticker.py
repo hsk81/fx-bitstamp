@@ -56,13 +56,14 @@ def loop (socket, poll_interval, ticker_url, silent=True):
 
     while True:
         this_tick = get_tick (ticker_url)
-        now = datetime.now ()
+        timestamp = time.time ()
+        now = datetime.fromtimestamp (timestamp)
 
         if not last_tick or last_tick.text != this_tick.text:
 
             tick = this_tick.json ()
             if not silent: print ('[%s] %s' % (now, tick))
-            tick['timestamp'] = now.timestamp ()
+            tick['timestamp'] = timestamp
             socket.send_json (tick)
 
         last_tick = this_tick
