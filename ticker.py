@@ -20,13 +20,12 @@ from datetime import datetime
 
 def get_arguments ():
 
-    parser = argparse.ArgumentParser (
-        description="Polls exchange for new ticks. The poll interval limits "
-                    "the maximum possible tick resolution, so keeping it as "
-                    "low as possible is desired. But since the exchange does "
-                    "impose a request limit per time unit it's not possible "
-                    "to poll beyond that cap (without getting banned). The "
-                    "ticks are published for further processing.")
+    parser = argparse.ArgumentParser (description=
+        "Polls exchange for new ticks. The poll interval limits the maximum "
+        "possible tick resolution, so keeping it as low as possible is "
+        "desired. But since the exchange does impose a request limit per time "
+        "unit it's not possible to poll beyond that cap (without getting "
+        "banned). The ticks are published for further processing.")
 
     parser.add_argument ("-s", "--silent",
         default=False, action="store_true",
