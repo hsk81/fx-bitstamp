@@ -25,8 +25,8 @@ setup (
         'requests>=1.2.0',
     ],
 
-    license='GPLv3',
     author='hsk81',
+    license='GPLv3',
     url='http://blackhan.ch/fx-bitstamp',
     author_email='hasan.karahan81@gmail.com',
     description='An FX client trading BTCs on Bitstamp.net'
