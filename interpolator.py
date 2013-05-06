@@ -86,7 +86,6 @@ def sub_side (context, sub_address, ema_decay, silent=True):
         curr_speed = 1.0
 
         while True:
-
             last_tick = curr_tick
             last_time = curr_time or datetime.now ()
             last_speed = curr_speed
