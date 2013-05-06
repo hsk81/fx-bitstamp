@@ -74,7 +74,7 @@ ticks = Stack (size=2)
 ###############################################################################
 ###############################################################################
 
-def sub_side (context, sub_address, silent):
+def sub_side (context, sub_address, silent=True):
 
     def loop (socket):
 
@@ -91,7 +91,7 @@ def sub_side (context, sub_address, silent):
     try: loop (socket)
     finally: socket.close ()
 
-def pub_side (context, pub_address, interval, silent):
+def pub_side (context, pub_address, interval, silent=True):
 
     def loop (socket):
         curr_tick = None
