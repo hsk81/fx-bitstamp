@@ -20,8 +20,9 @@ from datetime import datetime
 def get_arguments ():
 
     parser = argparse.ArgumentParser (description=
-        "Calculates the logarithms for the last price, the bid/ask and the"
-        "high/low pair.")
+        "Calculates the logarithms for the last price and the bid/ask pair "
+        "(with the corresponding relative difference) plus the logarithms for "
+        "the high/low pair.")
 
     parser.add_argument ("-s", "--silent",
         default=False, action="store_true",
