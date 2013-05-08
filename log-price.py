@@ -50,18 +50,19 @@ def loop (sub_socket, pub_socket, silent=True):
         log_high, log_low = math.log (high), math.log (low)
 
         pub_tick = {
-            'log-ratio': log_ratio,
-            'log-price': log_price,
-            'log-last': log_last,
-            'log-high': log_high,
-            'log-low': log_low,
-            'volume': volume
+            'ratio': log_ratio,
+            'price': log_price,
+            'last': log_last,
+            'high': log_high,
+            'low': log_low,
+            'volume': volume,
+            'timestamp': sub_tick['timestamp']
         }
 
         pub_socket.send_json (pub_tick)
-
         if not silent:
-            print ('[%s] %s' % (datetime.now (), pub_tick))
+            now = datetime.fromtimestamp (pub_tick['timestamp'])
+            print ('[%s] %s' % (now, pub_tick))
 
 ###############################################################################
 ###############################################################################
