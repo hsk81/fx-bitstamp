@@ -89,8 +89,7 @@ def loop (map_from: dict, map_to: dict, out_keys: list,
 if __name__ == "__main__":
 
     args = get_arguments ()
-    args.map_from = dict (args.map_from)
-    args.map_to = dict (args.map_to)
+    args.map_from, args.map_to = dict (args.map_from), dict (args.map_to)
     args.from_date = parser.parse (args.from_date) if args.from_date else None
     args.to_date = parser.parse (args.to_date) if args.to_date else None
 
