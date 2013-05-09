@@ -31,11 +31,11 @@ def get_arguments () -> argparse.Namespace:
         default=False, action='store_true',
         help='verbose logging (default: %(default)s)')
     parser.add_argument ('-o', '--out-keys',
-        default=['bid', 'ask', 'price', 'high', 'low', 'volume'],
+        default=['timestamp', 'bid', 'ask', 'price', 'high', 'low', 'volume'],
         nargs='+', help='output keys (default: %(default)s)')
-    parser.add_argument ('-a', '--alias-map', action='append',
+    parser.add_argument ('-m', '--map-to', action='append',
         default=[('last', 'price')],
-        nargs='+', help='alias map (default: %(default)s)')
+        nargs='+', help='output maps (default: %(default)s)')
     parser.add_argument ('-i', '--interval',
         default=1.250, type=float,
         help='seconds between polls (default: %(default)s [s])')
@@ -49,14 +49,14 @@ def next_response (url: str) -> req.Response:
 
     res = req.get (url); return res if res.status_code == 200 else None
 
-def loop (out_keys: list, alias_map: dict, interval: float, url: str,
+def loop (out_keys: list, map_to: dict, interval: float, url: str,
           verbose: bool=False) -> None:
 
-    def alias (key: str) -> str:
-        return alias_map[key] if key in alias_map else key
+    def mapped (key: str) -> str:
+        return map_to[key] if key in map_to else key
 
     def select (tick: dict) -> dict: return {
-        alias (k): v for k, v in tick.items () if alias (k) in out_keys
+        mapped (k): v for k, v in tick.items () if mapped (k) in out_keys
     }
 
     t0 = time.time ()
@@ -88,8 +88,9 @@ def loop (out_keys: list, alias_map: dict, interval: float, url: str,
 if __name__ == "__main__":
 
     args = get_arguments ()
+    args.map_to = dict (args.map_to)
 
-    try: loop (args.out_keys, dict (args.alias_map), args.interval, args.url,
+    try: loop (args.out_keys, args.map_to, args.interval, args.url,
         verbose=args.verbose)
 
     except KeyboardInterrupt:
