@@ -34,7 +34,7 @@ def get_arguments () -> argparse.Namespace:
         default=['bid', 'ask', 'price', 'high', 'low', 'volume'],
         nargs='+', help='output keys (default: %(default)s)')
     parser.add_argument ('-a', '--alias-map', action='append',
-        default=[('last', 'price')  ],
+        default=[('last', 'price')],
         nargs='+', help='alias map (default: %(default)s)')
     parser.add_argument ('-i', '--interval',
         default=1.250, type=float,
