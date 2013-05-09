@@ -47,7 +47,14 @@ def get_arguments () -> argparse.Namespace:
 
 def next_response (url: str) -> req.Response:
 
-    res = req.get (url); return res if res.status_code == 200 else None
+    try: res = req.get (url); return res if res.status_code == 200 \
+        else None
+
+    except KeyboardInterrupt:
+        raise
+
+    except Exception as ex:
+        print (ex, file=sys.stderr); return None
 
 def loop (out_keys: list, map_to: dict, interval: float, url: str,
           verbose: bool=False) -> None:
