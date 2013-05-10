@@ -23,7 +23,7 @@ def get_arguments () -> argparse.Namespace:
 
     parser = argparse.ArgumentParser (description=
         "Calculates the logarithm of a square root of a multiplication of two "
-        "numbers. It is possible to apply this function for multiple keys "
+        "numbers. It is possible to apply this function on multiple keys "
         "simultaneously.")
 
     parser.add_argument ("-v", "--verbose",
