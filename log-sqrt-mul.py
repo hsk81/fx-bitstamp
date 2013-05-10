@@ -29,25 +29,25 @@ def get_arguments () -> argparse.Namespace:
     parser.add_argument ("-v", "--verbose",
         default=False, action="store_true",
         help="verbose logging (default: %(default)s)")
-    parser.add_argument ("-l", "--left-keys", action='append',
+    parser.add_argument ("-l", "--in-keys-lhs", action='append',
         default=[], nargs='+',
-        help="left hand side keys (default: %(default)s)")
-    parser.add_argument ("-r", "--right_keys", action='append',
+        help="left hand side source keys (default: %(default)s)")
+    parser.add_argument ("-r", "--in-keys-rhs", action='append',
         default=[], nargs='+',
-        help="right hand side keys (default: %(default)s)")
-    parser.add_argument ("-t", "--target-keys", action='append',
+        help="right hand side source keys (default: %(default)s)")
+    parser.add_argument ("-o", "--out-keys", action='append',
         default=[], nargs='+',
         help="target keys (default: %(default)s)")
 
     return parser.parse_args ()
 
-def loop (left_keys: list, right_keys: list, target_keys: list,
+def loop (in_keys_lhs: list, in_keys_rhs: list, out_keys: list,
           verbose: bool=False) -> None:
 
     for line in sys.stdin:
         tick = JSON.decode (line.replace ("'", '"'))
 
-        for l, r, t in zip (left_keys, right_keys, target_keys):
+        for l, r, t in zip (in_keys_lhs, in_keys_rhs, out_keys):
             tick[t] = math.log (math.sqrt (float (tick[l]) * float (tick[r])))
 
         if verbose:
@@ -62,11 +62,11 @@ def loop (left_keys: list, right_keys: list, target_keys: list,
 if __name__ == "__main__":
 
     args = get_arguments ()
-    args.left_keys = list (reduce (lambda a, b: a + b, args.left_keys, []))
-    args.right_keys = list (reduce (lambda a, b: a + b, args.right_keys, []))
-    args.target_keys = list (reduce (lambda a, b: a + b, args.target_keys, []))
+    args.in_keys_lhs = list (reduce (lambda a, b: a + b, args.in_keys_lhs, []))
+    args.in_keys_rhs = list (reduce (lambda a, b: a + b, args.in_keys_rhs, []))
+    args.out_keys = list (reduce (lambda a, b: a + b, args.out_keys, []))
 
-    try: loop (args.left_keys, args.right_keys, args.target_keys,
+    try: loop (args.in_keys_lhs, args.in_keys_rhs, args.out_keys,
         verbose=args.verbose)
 
     except KeyboardInterrupt:
