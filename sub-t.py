@@ -22,8 +22,8 @@ def get_arguments () -> argparse.Namespace:
 
     parser = argparse.ArgumentParser (description=
         "Calculates the difference of corresponding key values between ticks. "
-        "It is possible to apply this function on multiple keys "
-        "simultaneously.")
+        "It is possible to apply this function on more than one key at the "
+        "same time.")
 
     parser.add_argument ("-v", "--verbose",
         default=False, action="store_true",
