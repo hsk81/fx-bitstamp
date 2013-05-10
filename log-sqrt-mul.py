@@ -31,13 +31,13 @@ def get_arguments () -> argparse.Namespace:
         help="verbose logging (default: %(default)s)")
     parser.add_argument ("-l", "--in-keys-lhs", action='append',
         default=[], nargs='+',
-        help="left hand side source keys (default: %(default)s)")
+        help="left hand side input keys (default: %(default)s)")
     parser.add_argument ("-r", "--in-keys-rhs", action='append',
         default=[], nargs='+',
-        help="right hand side source keys (default: %(default)s)")
+        help="right hand side input keys (default: %(default)s)")
     parser.add_argument ("-o", "--out-keys", action='append',
         default=[], nargs='+',
-        help="target keys (default: %(default)s)")
+        help="output keys (default: %(default)s)")
 
     return parser.parse_args ()
 
