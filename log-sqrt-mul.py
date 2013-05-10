@@ -47,8 +47,8 @@ def loop (in_keys_lhs: list, in_keys_rhs: list, out_keys: list,
     for line in sys.stdin:
         tick = JSON.decode (line.replace ("'", '"'))
 
-        for l, r, t in zip (in_keys_lhs, in_keys_rhs, out_keys):
-            tick[t] = math.log (math.sqrt (float (tick[l]) * float (tick[r])))
+        for l, r, k in zip (in_keys_lhs, in_keys_rhs, out_keys):
+            tick[k] = math.log (math.sqrt (float (tick[l]) * float (tick[r])))
 
         if verbose:
             now = datetime.fromtimestamp (tick['timestamp'])
