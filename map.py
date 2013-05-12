@@ -22,23 +22,23 @@ from numpy import *
 def get_arguments () -> argparse.Namespace:
 
     parser = argparse.ArgumentParser (description=
-        "Evaluates provided functions which can have multiple parameters and "
-        "stores the results in the corresponding keys. If there are less "
-        "functions than result keys than the last one will be used for the "
-        "remaining results. The parameters for each function need to be "
-        "provided as a group. Empty groups can either be left out or they can "
-        "be indicated by an empty string (used with functions without "
-        "parameters). String interpolation is based on Python's `format`.")
+        "Maps functions to a set of parameter values and stores the results "
+        "in the corresponding keys. If there are less functions than result "
+        "keys than the last one will be used for the remaining results. The "
+        "parameters for each function need to be provided as a group. Empty "
+        "groups can either be left out or they can be indicated by an empty "
+        "string (used for functions without parameters). Interpolation of "
+        "parameters is based on the `format` method of a string.")
 
     parser.add_argument ('-v', '--verbose',
         default=False, action='store_true',
         help='verbose logging (default: %(default)s)')
+    parser.add_argument ('-f', '--function', action='append',
+        default=[], nargs='+',
+        help='map function(s) (default: %(default)s)')
     parser.add_argument ('-p', '--parameter-group', action='append',
         default=[], nargs='+',
         help='parameter group *per* result key (default: %(default)s)')
-    parser.add_argument ('-f', '--function', action='append',
-        default=[], nargs='+',
-        help='function(s) to evaluate (default: %(default)s)')
     parser.add_argument ('-r', '--result', action='append',
         default=[], nargs='+',
         help='result keys (default: %(default)s)')
