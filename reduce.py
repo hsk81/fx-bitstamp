@@ -67,7 +67,7 @@ def get_arguments () -> argparse.Namespace:
         help='function parameter(s) (default: %(default)s)')
     parser.add_argument ('-n', '--stack-size', action='append',
         default=[], nargs='+',
-        help='size of stack of previously seen values (default: %(default)s)')
+        help='stack of previously seen values (default: %(default)s)')
     parser.add_argument ('-d', '--default', action='append',
         default=[], nargs='+',
         help='default result(s) (default: %(default)s)')
