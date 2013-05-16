@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     if not all (args.default):
         for index, (d, p) in enumerate (zip (args.default, args.parameter)):
-            args.default[index] = p if d is None else d
+            args.default[index] = p if d is None else d ## default is parameter
 
     try: do.loop (args.function, args.parameter, args.stack_size, args.default,
         args.result, verbose=args.verbose)
