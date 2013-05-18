@@ -19,7 +19,8 @@ class ReturnCallable (object):
     def __call__ (self, *args: list) -> numpy.array:
         return numpy.array (args[0]) - numpy.array (args[-2])
 
-    def __repr__ (self): return '{0} - {n-1}'
+    def __repr__ (self):
+        return '{0} - {n-1}'
 
 ###############################################################################
 ###############################################################################
