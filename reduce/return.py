@@ -14,7 +14,7 @@ import numpy
 ###############################################################################
 ###############################################################################
 
-class DiffCallable (object):
+class ReturnCallable (object):
 
     def __call__ (self, *args: list) -> numpy.array:
         return numpy.array (args[0]) - numpy.array (args[-2])
@@ -25,10 +25,11 @@ class DiffCallable (object):
 ###############################################################################
 
 if __name__ == "__main__":
-    diff = DiffCallable ()
 
     parser = do.get_args_parser ({
-        'stack-size': [[2]], 'function': [[diff]], 'default': [[0.0]]
+        'default': [[0.0]],
+        'function': [[ReturnCallable ()]],
+        'stack-size': [[2]],
     })
 
     args = do.get_args (parser=parser)
