@@ -51,7 +51,7 @@ if __name__ == "__main__":
     args = do.normalize (args)
     ema.set_decay (args.ema_decay)
 
-    if not all (args.default):  ## use provided parameter value as default
+    if not all (args.default): ## use provided parameter value as default
         for index, (d, p) in enumerate (zip (args.default, args.parameter)):
             args.default[index] = p if d is None else d
 
