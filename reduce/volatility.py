@@ -91,7 +91,7 @@ if __name__ == "__main__":
     args = do.normalize (args)
 
     volatility.exponent, volatility.scale = args.exponent, \
-        numpy.sqrt (numpy.array (args.interval_year) / args.stack_size) \
+        numpy.sqrt (numpy.array (args.interval_scaled) / args.stack_size) \
             if args.scale is None else args.scale ## override `interval-scaled`
 
     try: do.loop (args.function, args.parameter, args.stack_size, args.default,
