@@ -74,7 +74,7 @@ def loop (balance, fee, quota, verbose: bool=False) -> None:
                 btc -= quota * btc
 
         tick['btc'], tick['usd'] = list (btc), list (usd)
-        tick['tot'] = list (btc * tick['price'] + usd)
+        tick['tot'] = list (btc * array (tick['price']) + usd)
 
         if verbose:
             now = datetime.fromtimestamp (tick['timestamp'])
