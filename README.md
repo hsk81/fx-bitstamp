@@ -89,7 +89,7 @@ We have thrown away everything we're not interested in and have mapped the `last
 
 Now, it's time to aplly some advanced operations:
 ``` sh
-$ ./zmq/sub.py | ./interpolate.py -i 1.200 | ./reduce/return.py -p last -r return -n 500 | ./reduce/volatility.py -p return -r volatility -n 500 | ./alias.py -m volatility lhs-volatility | ./zmq/pub.py -pub "tcp://*:7777" -v > /dev/null ## "*" implies all IP addresses
+$ ./zmq/sub.py | ./interpolate.py -i 1.200 | ./reduce/return.py -p last -r return -n 500 | ./reduce/volatility.py -p return -r volatility -n 500 | ./alias.py -m volatility lhs-volatility | ./zmq/pub.py -pub "tcp://*:7777" -v > /dev/null ## "*" implies any IP addresses
 ```
 With `zmq/sub.py` we subscribe to the previously published stream by default assumed to be on the *local* machine at `tcp://127.0.0.1:8888`.
 
@@ -103,7 +103,7 @@ Finally we publish the stream again in a similar fashion like before; except thi
 
 Second volatility calculation:
 ``` sh
-$ ./zmq/sub.py | ./interpolate.py -i 1.000 | ./reduce/return.py -p last -r return -n 600 | ./reduce/volatility.py -p return -r volatility -n 600 | ./alias.py -m volatility rhs-volatility | ./zmq/pub.py -pub "tcp://*:9999" -v > /dev/null ## "*" implies all IP addresses
+$ ./zmq/sub.py | ./interpolate.py -i 1.000 | ./reduce/return.py -p last -r return -n 600 | ./reduce/volatility.py -p return -r volatility -n 600 | ./alias.py -m volatility rhs-volatility | ./zmq/pub.py -pub "tcp://*:9999" -v > /dev/null ## "*" implies any IP addresses
 ```
 For reasons to explained later we *repeat* the previous calculation, but this time our interpolation interval is 1.0 second, and we store the volatility in `rhs-volatility`. The following image shows the effect of changing the interpolation interval and calculating the corresponding volatilities:
 
