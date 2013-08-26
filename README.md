@@ -166,6 +166,51 @@ Finally we print verbosely again the quote stream on the terminal, *and* we stor
 
 ### Cat, Exponentiate, and Alpha Sim
 
+Now it's time to run a simulation to test and analyze a relatively simple strategy:
+
 ```
 $ cat data/lrv-ratio.log | ./map/exp.py -p last -r price | ./trade/alpha-sim.py -v > data/alpha-sim.log
 ```
+
+First, we access our stored (and processed) quote stream via the UNIX command `cat` and exponentiate the `last` entry the get the original `price`, which we also need in the decision process of our trading strategy. The input to `trade/alpha-sim.py` looks then like:
+
+``` json
+{"return": [0.00025433428139200003], "timestamp": 1368232031.982519, "ratio": [0.9589355359453091], "volatility": [0.350167924307066], "price": [117.96999999999998], "last": [4.770430354853751]}
+```
+So, we have now the following components of a quote:
+
++ `price`: the original, most recent price for a Bitcoin in US dollars;
++ `last`: the logarithm of the most recent price;
++ `return`: 10 minute overlapping differences of `last`;
++ `volatility`: 10 minute activity ("variance") of `return`;
++ `ratio`: trend indicator with *one plus* for a trend, *around one* for no trend and *one minus* for a mean reverting time series;
++ `timestamp`: point in time when the quote has been generated.
+
+Our trading strategy is simple and has only two rules:
+
+1. If there is a strong trend (ratio > 1.75) then either buy Bitcoins for a positive trend or sell them for a negative one. For each trade use only 1/1000 of your current account balance.
+
+2. If there is a weak or no trend (ratio < 1.25) then sell Bitcoins; again use only 1/1000 of the current account balance per trade.
+
+The logic behind the first rule is to detect and follow a trend and buy/sell into it (if our account balance allows it). The second rule ensures that we're *not* exposed in Bitcoins whenever the market direction is uncertain: We forgo potential gains should the price suddenly go up, but we also minimize our potential losses in case of a major dip.
+
+Since we know now how this particular strategy works, let's analyze it's performance (see previous figure 1st column, 2nd and 3rd row):
+
++ PnL percent: The `cyan` plot shows that the strategy seems to work; as long as there are from time to time larger movements (positive or sometimes also negative) we make a profit; but periods of little market activity are a loss.
+
++ USD and BTC balance: The `magenta` and `yellow` double plots show the development of our USD and BTC account balance. We started with 100 USD and 0 BTC; during strong positive trends the BTC balance went up and the USD went down; and otherwise we minimized our BTC exposure.
+
+Another important point to mention are the *fees*: The above plots and performance returns are the results of a simulation with a fee rate of 20/1000. The overall performance at the end of 30 days is strongly dependent on the fee structure:
+
+```
+Fee % | .050  .045  .040 .035 .030 .025 .020 .015 0.010 0.005 0.000
+PnL % |-.600 -.400 -.200 .000 .200 .400 .600 .800 1.000 1.200 1.400
+```
+Interestingly the 30-day PnL seems to depend *linearly* on the fee. Break even is achieved at a fee rate of 0.35 percent: Bitstamp.net allows you trade depending on your monthly volume as low as 0.22 percent, therefore based on this simple analysis a monthly return of 0.5 percent seems quite reasonable.
+
+But of course 30 days of data does not tell us a lot! This analysis could e.g. be enhanced by using Monte Carlo simulations which would create time series which would qualitatively correspond to our price history. For each of these "alternate realities" we'd run our trading strategy and see how its profits/losses change.
+
+On the other hand it is very encouraging to observe a very strong correlation between fees and profit: As long as the fees are sufficiently low, the bottom line should be positive (for almost *any* sub-period and/or price history).
+
+## Improvement Options: Performance and Strategy
+...
