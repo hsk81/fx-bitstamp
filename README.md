@@ -212,5 +212,15 @@ But of course 30 days of data does not tell us a lot! This analysis could e.g. b
 
 On the other hand it is very encouraging to observe a very strong correlation between fees and profit: As long as the fees are sufficiently low, the bottom line should be positive (for almost *any* sub-period and/or price history).
 
-## Improvement Options: Performance and Strategy
+## Improvement Options
+
+There are three ways to improve this still basic trading system: One is w.r.t. *technology*, the other w.r.t. to the applied *mathematics*, and another w.r.t. the trading *strategy*. Let's investigate each option:
+
+### Technology
+...
+
+### Mathematics
+...
+
+### Strategy
 ...
