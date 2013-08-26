@@ -125,11 +125,7 @@ The `reduce/ratio.py` divides the `lhs-volatility` with `rhs-volatility` values;
 
 The figure shows a period of about 30 days, and has the following sub-plots charted:
 
-+ The `blue` plot shows the original price for Bitcoins denominated in US dollars;
-+ the `red` plot show the logarithmic returns of the price;
-+ the `cyan` plot and the plot immediately below it with the two `magenta` and `yellow` plots show the performance and behavior of of a trading strategy which is based on the volatility ratio and which we'll analyze in detail below;
-+ the `magenta` plot (2nd column and row) shows the volatility ratio: it's not extremely clear cut, but when you look at the peaks which are above the value of 2.0 then you can observe  in most cases also a corresponding trend in the original price;
-+ the `green` plot displays the price volatility.
++ The `blue` plot shows the original price for Bitcoins denominated in US dollars; the `red` plot show the logarithmic returns of the price; the `cyan` plot and the plot immediately below it with the two `magenta` and `yellow` plots show the performance and behavior of of a trading strategy which is based on the volatility ratio and which we'll analyze in detail below; the `magenta` plot (2nd column and row) shows the volatility ratio: it's not extremely clear cut, but when you look at the peaks which are above the value of 2.0 then you can observe  in most cases also a corresponding trend in the original price; the `green` plot displays the price volatility.
 
 Once the trend indicator (named simply as `ratio`) is calculated, we publish it with `zmq/pub.py` on the port `7799` and print verbosely the current stream on the terminal.
 
