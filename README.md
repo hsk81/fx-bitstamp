@@ -131,9 +131,38 @@ Once the trend indicator (named simply as `ratio`) is calculated, we publish it 
 
 ### Subscribe, Grep and Alias
 
+Now it's time to do some cleanup and renaming:
+
 ``` sh
 $ ./zmq/sub.py -sub "tcp://127.0.0.1:7799" | grep "rhs-volatility" | ./alias.py -m rhs-volatility volatility -v > data/lrv-ratio.log
 ```
+
+We again start with `zmq/sub.py` and subscribe to our quote stream (which has by now already been processed quite a bit). Then we remove with the UNIX command `grep` the quotes with `lhs-volatility`, since we don't need two volatility entries anymore, and rename the remaining `rhs-volatility` with `alias.py` to simply `volatility`.
+
+It might be a little confusing why we did not use the `filter.py` tool to exclude `lhs-volatility`; to understand why we need to look at the quote stream before and after this tool chain is applied to:
+
+``` json
+[2013-05-11 10:01:16.631573] {'return': [0.000512776696989], 'ratio': [0.9458681141583831], 'lhs-volatility': [1.002482455930246], 'last': [4.762515756711868], 'timestamp': 1368248476.631574}
+[2013-05-11 09:41:28.056668] {'return': [0.013604480532464], 'ratio': [0.9466786310311711], 'last': [4.761575465152227], 'rhs-volatility': [1.058946957362173], 'timestamp': 1368247288.056668}
+[2013-05-11 09:41:28.056668] {'return': [0.013604480532464], 'ratio': [0.9474912350833481], 'last': [4.761575465152227], 'rhs-volatility': [1.058038764698504], 'timestamp': 1368247288.056668}
+[2013-05-11 10:01:26.646501] {'return': [0.000512776696989], 'ratio': [0.9457270087825611], 'lhs-volatility': [1.000615836114313], 'last': [4.762515756711868], 'timestamp': 1368248486.646501}
+[2013-05-11 09:41:28.056668] {'return': [0.013604480532464], 'ratio': [0.9465401920177001], 'last': [4.761575465152227], 'rhs-volatility': [1.057129791796101], 'timestamp': 1368247288.056668}
+[2013-05-11 10:01:26.646501] {'return': [0.000512776696989], 'ratio': [0.944771148642325], 'lhs-volatility': [0.9987457276592241], 'last': [4.762515756711868], 'timestamp': 1368248486.646501}
+...
+```
+
+As you can see the `lhs-volatility` and `rhs-volatility` quote stream are not really merged, but simply *interleaved*! Therefore just excluding `lhs-volatility` would be the wrong approach, since then we'd end up with some quotes which don't have *any* volatility information left; that's why we have to completely remove on sub-stream and continue with the remaining one.
+
+Well, after the application of the tool chain we get:
+
+``` json
+[2013-05-11 09:41:28.056668] {'volatility': [1.061764501517898], 'timestamp': 1368247288.056668, 'last': [4.761575465152227], 'ratio': [0.9530805730440061], 'return': [0.013604480532464]}
+[2013-05-11 09:41:28.056668] {'volatility': [1.061430109754043], 'timestamp': 1368247288.056668, 'last': [4.761575465152227], 'ratio': [0.9518803908740491], 'return': [0.013604480532464]}
+[2013-05-11 09:41:28.056668] {'volatility': [1.061095612610575], 'timestamp': 1368247288.056668, 'last': [4.761575465152227], 'ratio': [0.950677177059818], 'return': [0.013604480532464]}
+...
+```
+
+Finally we print verbosely again the quote stream on the terminal, *and* we store our calculations into a file. We could have simply published it again and continued with the new quote stream, but I wanted to simulate based on the `ratio` and `volatility` entries various trading strategies: It does not make sense to calculate again and again these two numbers during development. In a production environment wiring this stage of the quote stream directly with the next one (via `zmq/pub.py` and `zmq/sub.py`) makes of course sense, and such a buffering into a file should be avoided.
 
 ### Cat, Exponentiate, and Alpha Sim
 
