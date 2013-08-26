@@ -162,7 +162,7 @@ Well, after the application of the tool chain we get:
 ...
 ```
 
-Finally we print verbosely again the quote stream on the terminal, *and* we store our calculations into a file. We could have simply published it again and continued with the new quote stream, but I wanted to simulate based on the `ratio` and `volatility` entries various trading strategies: It does not make sense to calculate again and again these two numbers during development. In a production environment wiring this stage of the quote stream directly with the next one (via `zmq/pub.py` and `zmq/sub.py`) makes of course sense, and such a buffering into a file should be avoided.
+Finally we print verbosely again the quote stream on the terminal, *and* we store our calculations into a file. We could have simply published it again and continued with the new quote stream, but I wanted to simulate based on the `ratio` and `volatility` entries various trading strategies: It does not make sense to calculate again and again these two numbers during development. In a production environment wiring this stage of the quote stream directly with the next one (via `zmq/pub.py` and `zmq/sub.py`) makes of course sense, and such a buffering into a file is not required.
 
 ### Cat, Exponentiate, and Alpha Sim
 
