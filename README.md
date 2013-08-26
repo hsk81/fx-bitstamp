@@ -89,7 +89,7 @@ We have thrown away everything we're not interested in and have mapped the `last
 
 Now, it's time to aplly some advanced operations:
 ``` sh
-$ ./zmq/sub.py | ./interpolate.py -i 1.200 | ./reduce/return.py -p last -r return -n 500 | ./reduce/volatility.py -p return -r volatility -n 500 | ./alias.py -m volatility lhs-volatility | ./zmq/pub.py -pub "tcp://*:7777" -v > /dev/null ## "*" implies any IP addresses
+$ ./zmq/sub.py | ./interpolate.py -i 1.200 | ./reduce/return.py -p last -r return -n 500 | ./reduce/volatility.py -p return -r volatility -n 500 | ./alias.py -m volatility lhs-volatility | ./zmq/pub.py -pub "tcp://*:7777" -v > /dev/null ## "*" implies on any IP address
 ```
 With `zmq/sub.py` we subscribe to the previously published stream by default assumed to be on the *local* machine at `tcp://127.0.0.1:8888`.
 
@@ -103,7 +103,7 @@ Finally we publish the stream again in a similar fashion like before; except thi
 
 Second volatility calculation:
 ``` sh
-$ ./zmq/sub.py | ./interpolate.py -i 1.000 | ./reduce/return.py -p last -r return -n 600 | ./reduce/volatility.py -p return -r volatility -n 600 | ./alias.py -m volatility rhs-volatility | ./zmq/pub.py -pub "tcp://*:9999" -v > /dev/null ## "*" implies any IP addresses
+$ ./zmq/sub.py | ./interpolate.py -i 1.000 | ./reduce/return.py -p last -r return -n 600 | ./reduce/volatility.py -p return -r volatility -n 600 | ./alias.py -m volatility rhs-volatility | ./zmq/pub.py -pub "tcp://*:9999" -v > /dev/null ## "*" implies on any IP address
 ```
 For reasons to explained later we *repeat* the previous calculation, but this time our interpolation interval is 1.0 second, and we store the volatility in `rhs-volatility`. The following image shows the effect of changing the interpolation interval and calculating the corresponding volatilities:
 
@@ -113,9 +113,21 @@ The plot shows the logarithm, return and volatility for *three* different interp
 
 ### Double Subscribe, Ratio and Publish
 
+So we have now *two* volatility time series, and would like to bring them together:
 ``` sh
-$ ./zmq/sub.py -sub "tcp://127.0.0.1:7777" -sub "tcp://127.0.0.1:9999" | ./reduce/ratio.py -n lhs-volatility -d rhs-volatility -r ratio | ./zmq/pub.py -pub "tcp://*:7799" -v > /dev/null
+$ ./zmq/sub.py -sub "tcp://127.0.0.1:7777" -sub "tcp://127.0.0.1:9999" | ./reduce/ratio.py -n lhs-volatility -d rhs-volatility -r ratio | ./zmq/pub.py -pub "tcp://*:7799" -v > /dev/null ## "*" implies on any IP address
 ```
+First with `zmq/sub.py` we subscribe to *both* streams at `tcp://127.0.0.1:7777` and `tcp://127.0.0.1:9999`: The subscription is fair in the sense that it tries to take alternatively from each input queue as long as each queue has a quote to deliver.
+
+The `reduce/ratio.py` divides the `lhs-volatility` with `rhs-volatility` values; since these two volatilities are slightly off from each other (due to different interpolations), we actually end up calculating a **trend indicator**: If the ratio is higher than one we have a positive or negative trend, if it hovers around one there is no trend, and if it is less then one then we should observe a mean reverting behavior. The following figure shows this quite clearly:
+
+![Ratio Plot](http://db.tt/iDQNvyLK "USD Price (B), Log Returns (R), PnL Percent (C), Volatility Ratio (M), BTC & USD Account (M&Y), Volatility (G)")
+
+The figure shows a period of about 30 days, and has the following sub-plots charted:
+
++ ...
+
+Once the trend indicator (named simply as `ratio`) is calculated, we publish it with `zmq/pub.py` on the port `7799` and print verbosely the current stream on the terminal.
 
 ### Subscribe, Grep and Alias
 
