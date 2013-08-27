@@ -217,7 +217,42 @@ On the other hand it is very encouraging to observe a very strong correlation be
 There are three ways to improve this still basic trading system: One is w.r.t. *technology*, the other w.r.t. to the applied *mathematics*, and another w.r.t. the trading *strategy*. Let's investigate each option:
 
 ### Technology
-...
+
+The options here are vast, but I focus only on the most obvious ones. First, we'll look  how fast our solution is:
+
+![Time Measurement - IPC/1GQPS](http://db.tt/9OcNjBnm "1 Giga Quotes per Second")
+
+The measurement were taken using an optimized chain of tool chains:
+
+``` sh
+$ cat /tmp/ticks.log | ./filter.py -e high low -e bid ask -e volume | ./map/float.py -p last -r last | ./map/log.py -p last -r last | ./simulate.py -a 0.001 | ./zmq/pub.py -pub 'ipc:///tmp/8888' > /dev/null
+```
+We copied our ticks to the `/tmp` folder to ensure they reside in RAM and we used the `ipc:///tmp/8888` UNIX socket for interprocess communication (instead of TCP); the effect of both of these changes were not measurable though. Then we started the interpolation tool chains
+
+``` sh
+$ ./zmq/sub.py -sub 'ipc:///tmp/8888' | ./interpolate.py -i 1.200 | ./reduce/return.py -p last -r return -n 500 | ./reduce/volatility.py -p return -r volatility -n 500 | ./alias.py -m volatility lhs-volatility | ./zmq/pub.py -pub "ipc:///tmp/7777" > /dev/null
+```
+and
+
+``` sh
+$ ./zmq/sub.py -sub 'ipc:///tmp/0' | ./interpolate.py -i 1.000 | ./reduce/return.py -p last -r return -n 600 | ./reduce/volatility.py -p return -r volatility -n 600 | ./alias.py -m volatility lhs-volatility | ./zmq/pub.py -pub "ipc:///tmp/9999" > /dev/null
+```
+which again use the IPC protocol instead of TCP; again no measurable changes. But then we used the following tool chain
+
+``` sh
+./zmq/sub.py -sub 'ipc:///tmp/7777' -sub 'ipc:///tmp/9999' | ./reduce/ratio.py -n lhs-volatility -d rhs-volatility -r ratio | grep "rhs-volatility" | ./alias.py -m rhs-volatility volatility | ./map/exp.py -p last -r price | ./map/now.py -r now | ./filter.py -i timestamp -i now | ./reduce/return.py -p now -r dt -n 2 > /tmp/dt.log
+```
+which combines the former three tool chains into a single one and measures how fast the quote stream is flowing using `map/now.py` and `reduce/return.py` (which is a simple subtraction operation). We omitted `trade/alpha-sim.py` to investigate how fast the system can process the quote stream just *before* feeding it into the actual trading strategy; plus in all cases we omitted verbose printing.
+
+Chain combination/merging did help to improve performance by pushing the bulk of the measurements below 1ms towards 0.1ms. Our simulation tries to keep an average speed of 1ms, but we observe a range between 0.1ms and 100ms where the apparent average speed still hovers around 1ms.
+
+The odd behavior might have an explanation: Python's garbage collector cleans up in regular intervals un-referenced objects from the memory; this process (or some other) causes these slowdowns to about 100ms; to make up for this lost time the simulator accelerates the quote stream speed to 0.1ms and keeps so the average around the desired 1ms speed.
+
+Obviously this behavior is very much to be avoided, and we'd like to keep as many measurements as possible tightly around 1ms (jitter reduction). This can probably be fixed by investigating Python's garbage collector, the processes running on the system during the simulation and/or the underlying [ZeroMQ](http://zeromq.org) transport layer.
+
+These measurements show one fact very clearly though: If required the system has very much the capacity to run at a quote stream speed of 0.1ms! Since the exchange itself delivers the quotes every 1-10 seconds, the current performance is more than enough for our purposes. 
+
+We could use another Python interprete, e.g. (PyPy)[http://pypy.org] which promises faster execution times. Further, rewriting and combining various tools within the different chains is another option (although it would be contrary to the *one tool for one task* approach). The quote stream uses JSON, which has longer parsing times compared to simpler position based message protocols; it is possible to replace it but we'd loose the great flexibility it offers compared to the others. Increasing the number of CPU cores might also have an effect, although during the simulation the available four cores were not used 100%; another possibilities might be to increase CPU cache or use faster RAM.
 
 ### Mathematics
 ...
