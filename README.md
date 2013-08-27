@@ -218,7 +218,7 @@ There are three ways to improve this still basic trading system: One is w.r.t. *
 
 ### Technology
 
-The options here are vast, but I focus only on the most obvious ones. First, we'll look  how fast our solution is:
+The options here are vast, but I focus only on the most obvious ones. First, we'll look at how fast our solution is:
 
 ![Time Measurement - IPC/1GQPS](http://db.tt/9OcNjBnm "1 Giga Quotes per Second")
 
@@ -252,7 +252,7 @@ Obviously this behavior is very much to be avoided, and we'd like to keep as man
 
 These measurements show one fact very clearly though: If required the system has very much the capacity to run at a quote stream speed of 0.1ms! Since the exchange itself delivers the quotes every 1-10 seconds, the current performance is more than enough for our purposes. 
 
-We could use another Python interprete, e.g. (PyPy)[http://pypy.org] which promises faster execution times. Further, rewriting and combining various tools within the different chains is another option (although it would be contrary to the *one tool for one task* approach). The quote stream uses JSON, which has longer parsing times compared to simpler position based message protocols; it is possible to replace it but we'd loose the great flexibility it offers compared to the others. Increasing the number of CPU cores might also have an effect, although during the simulation the available four cores were not used 100%; another possibilities might be to increase CPU cache or use faster RAM.
+We could use another Python interprete, e.g. [PyPy](http://pypy.org) which promises faster execution times. Further, rewriting and combining various tools within the different chains is another option (although it would be contrary to the *one tool for one task* approach). The quote stream uses JSON, which has longer parsing times compared to simpler position based message protocols; it is possible to replace it but we'd loose the great flexibility it offers compared to the others. Increasing the number of CPU cores might also have an effect, although during the simulation the available four cores were not used 100%; another possibilities might be to increase CPU cache or use faster RAM.
 
 ### Mathematics
 ...
