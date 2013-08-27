@@ -235,7 +235,7 @@ $ ./zmq/sub.py -sub 'ipc:///tmp/8888' | ./interpolate.py -i 1.200 | ./reduce/ret
 and
 
 ``` sh
-$ ./zmq/sub.py -sub 'ipc:///tmp/0' | ./interpolate.py -i 1.000 | ./reduce/return.py -p last -r return -n 600 | ./reduce/volatility.py -p return -r volatility -n 600 | ./alias.py -m volatility lhs-volatility | ./zmq/pub.py -pub "ipc:///tmp/9999" > /dev/null
+$ ./zmq/sub.py -sub 'ipc:///tmp/8888' | ./interpolate.py -i 1.000 | ./reduce/return.py -p last -r return -n 600 | ./reduce/volatility.py -p return -r volatility -n 600 | ./alias.py -m volatility lhs-volatility | ./zmq/pub.py -pub "ipc:///tmp/9999" > /dev/null
 ```
 which again use the IPC protocol instead of TCP; again no measurable changes. But then we used the following tool chain
 
