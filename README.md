@@ -33,7 +33,7 @@ This composition is true for the initial, unprocessed quote stream: Except for `
 
 Let's start with the most basic operation: Asking the exchange for quotes and recording them for later usage into a file. You do this with the `ticker.py` tool:
 ``` sh
-$ ./ticker.py -v > log/ticks.log
+$ ./tool/ticker.py -v > log/ticks.log
 ```
 This tool polls the exchange's ticker URL almost every second and stores the reported quotes in `log/ticks.log`; plus thanks to the `-v` (--verbose) switch the quotes are also printed on the terminal.
 
@@ -41,7 +41,7 @@ Each tool should have a `-h` (--help) switch, printing a short description what 
 
 Although not always possible following this philosophy allows for a quick and simple "plumbing" of different tools together in a chain. Mandatory options can in the most cases avoided by using reasonable defaults, e.g.
 ``` sh
-$ ./ticker.py -h
+$ ./tool/ticker.py -h
 usage: ticker.py [-h] [-v] [-i INTERVAL] [-u URL]
 
 Polls exchange for new ticks: The poll interval limits the maximum possible
@@ -61,7 +61,7 @@ optional arguments:
 
 Let's plunge into analyzing the following chain:
 ``` sh
-$ cat log/ticks.log | ./filter.py -e high low -e bid ask -e volume | ./map/float.py -p last -r last | ./map/log.py -p last -r last | ./simulate.py -a 0.001 | ./zmq/pub.py -v > /dev/null
+$ cat log/ticks.log | ./tool/filter.py -e high low -e bid ask -e volume | ./map/float.py -p last -r last | ./map/log.py -p last -r last | ./tool/simulate.py -a 0.001 | ./zmq/pub.py -v > /dev/null
 ```
 It first takes the recorded ticks and prints them via the standard UNIX command `cat` to the standard output. Then in a second step, the `high`, `low`, `bid`, `ask` and `volume` components of each quote are *excluded* using the `filter.py` tool. In the next two steps the `last` value is mapped with `map/float.py` to a floating point number (from a string) and then with `map/log.py` to its logarithmic value.
 
@@ -89,7 +89,7 @@ We have thrown away everything we're not interested in and have mapped the `last
 
 Now, it's time to aplly some advanced operations:
 ``` sh
-$ ./zmq/sub.py | ./interpolate.py -i 1.200 | ./reduce/return.py -p last -r return -n 500 | ./reduce/volatility.py -p return -r volatility -n 500 | ./alias.py -m volatility lhs-volatility | ./zmq/pub.py -pub "tcp://*:7777" -v > /dev/null ## "*" implies on any IP address
+$ ./zmq/sub.py | ./tool/interpolate.py -i 1.200 | ./reduce/return.py -p last -r return -n 500 | ./reduce/volatility.py -p return -r volatility -n 500 | ./tool/alias.py -m volatility lhs-volatility | ./zmq/pub.py -pub "tcp://*:7777" -v > /dev/null ## "*" implies on any IP address
 ```
 With `zmq/sub.py` we subscribe to the previously published stream by default assumed to be on the *local* machine at `tcp://127.0.0.1:8888`.
 
@@ -103,7 +103,7 @@ Finally we publish the stream again in a similar fashion like before; except thi
 
 Second volatility calculation:
 ``` sh
-$ ./zmq/sub.py | ./interpolate.py -i 1.000 | ./reduce/return.py -p last -r return -n 600 | ./reduce/volatility.py -p return -r volatility -n 600 | ./alias.py -m volatility rhs-volatility | ./zmq/pub.py -pub "tcp://*:9999" -v > /dev/null ## "*" implies on any IP address
+$ ./zmq/sub.py | ./tool/interpolate.py -i 1.000 | ./reduce/return.py -p last -r return -n 600 | ./reduce/volatility.py -p return -r volatility -n 600 | ./tool/alias.py -m volatility rhs-volatility | ./zmq/pub.py -pub "tcp://*:9999" -v > /dev/null ## "*" implies on any IP address
 ```
 For reasons to explained later we *repeat* the previous calculation, but this time our interpolation interval is 1.0 second, and we store the volatility in `rhs-volatility`. The following image shows the effect of changing the interpolation interval and calculating the corresponding volatilities:
 
@@ -134,7 +134,7 @@ Once the trend indicator (named simply as `ratio`) is calculated, we publish it 
 Now it's time to do some cleanup and renaming:
 
 ``` sh
-$ ./zmq/sub.py -sub "tcp://127.0.0.1:7799" | grep "rhs-volatility" | ./alias.py -m rhs-volatility volatility -v > data/lrv-ratio.log
+$ ./zmq/sub.py -sub "tcp://127.0.0.1:7799" | grep "rhs-volatility" | ./tool/alias.py -m rhs-volatility volatility -v > data/lrv-ratio.log
 ```
 
 We again start with `zmq/sub.py` and subscribe to our quote stream (which has by now already been processed quite a bit). Then we remove with the UNIX command `grep` the quotes with `lhs-volatility`, since we don't need two volatility entries anymore, and rename the remaining `rhs-volatility` with `alias.py` to simply `volatility`.
@@ -225,22 +225,22 @@ The options here are vast, but I focus only on the most obvious ones. First, we'
 The measurement were taken using an optimized chain of tool chains:
 
 ``` sh
-$ cat /tmp/ticks.log | ./filter.py -e high low -e bid ask -e volume | ./map/float.py -p last -r last | ./map/log.py -p last -r last | ./simulate.py -a 0.001 | ./zmq/pub.py -pub 'ipc:///tmp/8888' > /dev/null
+$ cat /tmp/ticks.log | ./tool/filter.py -e high low -e bid ask -e volume | ./map/float.py -p last -r last | ./map/log.py -p last -r last | ./tool/simulate.py -a 0.001 | ./zmq/pub.py -pub 'ipc:///tmp/8888' > /dev/null
 ```
 We copied our ticks to the `/tmp` folder to ensure they reside in RAM and we used the `ipc:///tmp/8888` UNIX socket for interprocess communication (instead of TCP); the effect of both of these changes were not measurable though. Then we started the interpolation tool chains
 
 ``` sh
-$ ./zmq/sub.py -sub 'ipc:///tmp/8888' | ./interpolate.py -i 1.200 | ./reduce/return.py -p last -r return -n 500 | ./reduce/volatility.py -p return -r volatility -n 500 | ./alias.py -m volatility lhs-volatility | ./zmq/pub.py -pub "ipc:///tmp/7777" > /dev/null
+$ ./zmq/sub.py -sub 'ipc:///tmp/8888' | ./tool/interpolate.py -i 1.200 | ./reduce/return.py -p last -r return -n 500 | ./reduce/volatility.py -p return -r volatility -n 500 | ./tool/alias.py -m volatility lhs-volatility | ./zmq/pub.py -pub "ipc:///tmp/7777" > /dev/null
 ```
 and
 
 ``` sh
-$ ./zmq/sub.py -sub 'ipc:///tmp/8888' | ./interpolate.py -i 1.000 | ./reduce/return.py -p last -r return -n 600 | ./reduce/volatility.py -p return -r volatility -n 600 | ./alias.py -m volatility rhs-volatility | ./zmq/pub.py -pub "ipc:///tmp/9999" > /dev/null
+$ ./zmq/sub.py -sub 'ipc:///tmp/8888' | ./tool/interpolate.py -i 1.000 | ./reduce/return.py -p last -r return -n 600 | ./reduce/volatility.py -p return -r volatility -n 600 | ./tool/alias.py -m volatility rhs-volatility | ./zmq/pub.py -pub "ipc:///tmp/9999" > /dev/null
 ```
 which again use the IPC protocol instead of TCP; again no measurable changes. But then we used the following tool chain
 
 ``` sh
-./zmq/sub.py -sub 'ipc:///tmp/7777' -sub 'ipc:///tmp/9999' | ./reduce/ratio.py -n lhs-volatility -d rhs-volatility -r ratio | grep "rhs-volatility" | ./alias.py -m rhs-volatility volatility | ./map/exp.py -p last -r price | ./map/now.py -r now | ./filter.py -i timestamp -i now | ./reduce/return.py -p now -r dt -n 2 > /tmp/dt.log
+./zmq/sub.py -sub 'ipc:///tmp/7777' -sub 'ipc:///tmp/9999' | ./reduce/ratio.py -n lhs-volatility -d rhs-volatility -r ratio | grep "rhs-volatility" | ./tool/alias.py -m rhs-volatility volatility | ./map/exp.py -p last -r price | ./map/now.py -r now | ./tool/filter.py -i timestamp -i now | ./reduce/return.py -p now -r dt -n 2 > /tmp/dt.log
 ```
 which combines the former three tool chains into a single one and measures how fast the quote stream is flowing using `map/now.py` and `reduce/return.py` (which is a simple subtraction operation). We omitted `trade/alpha-sim.py` to investigate how fast the system can process the quote stream just *before* feeding it into the actual trading strategy; plus in all cases we omitted verbose printing.
 
