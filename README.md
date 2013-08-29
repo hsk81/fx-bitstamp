@@ -169,10 +169,10 @@ Finally we print verbosely again the quote stream on the terminal, *and* we stor
 Now it's time to run a simulation to test and analyze a relatively simple strategy:
 
 ```
-$ cat data/lrv-ratio.log | ./map/exp.py -p last -r price | ./trade/alpha-sim.py -v > data/alpha-sim.log
+$ cat data/lrv-ratio.log | ./map/exp.py -p last -r price | ./trade/alpha.py -v > data/alpha.log
 ```
 
-First, we access our stored (and processed) quote stream via the UNIX command `cat` and exponentiate the `last` entry the get the original `price`, which we also need in the decision process of our trading strategy. The input to `trade/alpha-sim.py` looks then like:
+First, we access our stored (and processed) quote stream via the UNIX command `cat` and exponentiate the `last` entry the get the original `price`, which we also need in the decision process of our trading strategy. The input to `trade/alpha.py` looks then like:
 
 ``` json
 {"return": [0.00025433428139200003], "timestamp": 1368232031.982519, "ratio": [0.9589355359453091], "volatility": [0.350167924307066], "price": [117.96999999999998], "last": [4.770430354853751]}
@@ -242,7 +242,7 @@ which again use the IPC protocol instead of TCP; again no measurable changes. Bu
 ``` sh
 ./zmq/sub.py -sub 'ipc:///tmp/7777' -sub 'ipc:///tmp/9999' | ./reduce/ratio.py -n lhs-volatility -d rhs-volatility -r ratio | grep "rhs-volatility" | ./tool/alias.py -m rhs-volatility volatility | ./map/exp.py -p last -r price | ./map/now.py -r now | ./tool/filter.py -i timestamp -i now | ./reduce/return.py -p now -r dt -n 2 > /tmp/dt.log
 ```
-which combines the former three tool chains into a single one and measures how fast the quote stream is flowing using `map/now.py` and `reduce/return.py` (which is a simple subtraction operation). We omitted `trade/alpha-sim.py` to investigate how fast the system can process the quote stream just *before* feeding it into the actual trading strategy; plus in all cases we omitted verbose printing.
+which combines the former three tool chains into a single one and measures how fast the quote stream is flowing using `map/now.py` and `reduce/return.py` (which is a simple subtraction operation). We omitted `trade/alpha.py` to investigate how fast the system can process the quote stream just *before* feeding it into the actual trading strategy; plus in all cases we omitted verbose printing.
 
 Chain combination/merging did help to improve performance by pushing the bulk of the measurements below 1ms towards 0.1ms. Our simulation tries to keep an average speed of 1ms, but we observe a range between 0.1ms and 100ms where the apparent average speed still hovers around 1ms.
 
