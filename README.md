@@ -255,7 +255,25 @@ These measurements show one fact very clearly though: If required the system has
 We could use another Python interpreter, e.g. [PyPy](http://pypy.org) which promises faster execution times. Further, rewriting and combining various tools within the different chains is another option (although it would be contrary to the *one tool for one task* approach). The quote stream uses JSON, which has longer parsing times compared to simpler position based message protocols; it is possible to replace it but we'd loose the great flexibility it offers compared to the others. Increasing the number of CPU cores might also have an effect, although during the simulation the available four cores were not used 100%; other possibilities might be to increase CPU cache or to use faster RAM.
 
 ### Mathematics
-...
+
+Inhomogeneous to homogeneous time series conversion is not trivial and it would be preferable to have methods which calculate *directly* sophisticated quantities like volatilies or correlations.
+
+This is possible thanks to convolution operators: Calculating these must be efficient, and therefore a full convolution is not feasible! But thanks to the *exponential moving average* (EMA) operator which can be constructed very quickly in an interative fashion, we can build a pleathora of complex but fast operators based upon it.
+
+The basic definition of `EMA[τ;z]` is
+```
+EMA (t@{n}) := μ·EMA (t@{n-1}) + (1-μ)·z@{n-1};
+```
+with
+```
+μ := exp (-α); α := (t@{n} - t@{n-1})/τ;
+```
+where
+
++ `τ` is a time range used here for scaling (between one minute and mutiple weeks); and
++ `z` is an inhomogeneous times series with `z@{n-1}` representing the previous tick.
+
+So `EMA (t@{n})` is then the *wheighted average* of the last EMA and the previous tick. We've used here the *previous point* definiton which relies on the previous tick `z@{n-1}` instead of the next tick `z@{n}`. We will not elaborate on more complex operators based on this EMA, since the process of implementing them within this project is still ongoing.
 
 ### Strategy
 ...
