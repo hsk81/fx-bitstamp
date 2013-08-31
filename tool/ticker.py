@@ -38,7 +38,7 @@ def get_arguments () -> argparse.Namespace:
         help='seconds between polls (default: %(default)s [s])')
     parser.add_argument ('-u', '--url',
         default='https://www.bitstamp.net/api/ticker/',
-        help='API (default: %(default)s)')
+        help='JSON API (default: %(default)s)')
 
     return parser.parse_args ()
 
