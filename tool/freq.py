@@ -34,13 +34,11 @@ def get_args_parser (defaults: dict=frozenset ({})) -> argparse.ArgumentParser:
         """, epilog=
         """
         Some researchers found the "log tick frequency," log f (t@{i}), to be
-        more relevant. We can also define the average time interval between
-        ticks, which is simply the inverse tick f^(-1) (t@{i}). Tick frequency
-        can also be computed by a times series operator.
-        The tick frequency is sometimes taken as a proxy for the transaction
-        volume on the markets. For various reasons, we should be cautious when
-        drawing conclusions on volume (or market share) from tick frequency
-        though.
+        more relevant. It's also possible to define the average time interval
+        between ticks, which is simply the inverse tick f^(-1) (t@{i}). The
+        tick frequency is sometimes taken as a proxy for the transaction volume
+        on the markets. For various reasons, caution should be applied when
+        drawing conclusions on volume from tick frequency though.
         """)
 
     parser.add_argument ("-v", "--verbose",
