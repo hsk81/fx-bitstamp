@@ -83,13 +83,10 @@ def loop (interval: float, url: str, verbose: bool=False) -> None:
 ###############################################################################
 
 if __name__ == "__main__":
+
     args = get_arguments ()
-
-    try:
-        loop (args.interval, args.url, verbose=args.verbose)
-
-    except KeyboardInterrupt:
-        pass
+    try: loop (args.interval, args.url, verbose=args.verbose)
+    except KeyboardInterrupt: pass
 
 ###############################################################################
 ###############################################################################
