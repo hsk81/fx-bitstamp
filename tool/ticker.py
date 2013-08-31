@@ -44,14 +44,16 @@ def get_arguments () -> argparse.Namespace:
 
 def next_response (url: str) -> req.Response:
 
-    try: res = req.get (url); return res if res.status_code == 200 \
-        else None
+    try:
+        res = req.get (url)
+        return res if res.status_code == 200 else None
 
     except KeyboardInterrupt:
         raise
 
     except Exception as ex:
-        print (ex, file=sys.stderr); syslog.syslog (syslog.LOG_ERR, str (ex))
+        print (ex, file=sys.stderr)
+        syslog.syslog (syslog.LOG_ERR, str (ex))
 
 def loop (interval: float, url: str, verbose: bool=False) -> None:
 
@@ -83,8 +85,12 @@ def loop (interval: float, url: str, verbose: bool=False) -> None:
 if __name__ == "__main__":
 
     args = get_arguments ()
-    try: loop (args.interval, args.url, verbose=args.verbose)
-    except KeyboardInterrupt: pass
+
+    try:
+        loop (args.interval, args.url, verbose=args.verbose)
+
+    except KeyboardInterrupt:
+        pass
 
 ###############################################################################
 ###############################################################################
