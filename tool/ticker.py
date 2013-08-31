@@ -83,7 +83,6 @@ def loop (interval: float, url: str, verbose: bool=False) -> None:
 ###############################################################################
 
 if __name__ == "__main__":
-
     args = get_arguments ()
 
     try:
