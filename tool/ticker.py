@@ -26,8 +26,8 @@ def get_arguments () -> argparse.Namespace:
         Polls exchange for new ticks: The poll interval limits the maximum
         possible tick resolution, so keeping it as low as possible is
         desired. But since the exchange does impose a request limit per time
-        unit it's not possible to poll beyond that cap (without getting
-        banned).
+        unit it's not possible to poll beyond that cap - without getting
+        banned.
         """)
 
     parser.add_argument ('-v', '--verbose',
