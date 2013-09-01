@@ -1,4 +1,4 @@
-# Quote Stream -- FX Streaming Engine
+# Quote Stream - FX Streaming Engine
 
 This project is about a trading system for Bitcoins intended to be applied to the [Bitstamp.net](http://bitstamp.net) exchange. But it can also be used with other exchanges and on other kind of time series provided these are offered via a JSON based API.
 
@@ -6,7 +6,7 @@ The basic idea of the system is to model the trading quotes as a stream/pipe of 
 
 This approach has been loosely inspired by the UNIX approach, where the whole system is simply a collection of simple commands that do their job well. A crucial difference is though the fact the UNIX commands work in general on a hierarchical file system as a source and/or target of data, whereas here the quote stream is used as a carrier of data instead.
 
-## Quote Stream
+## Quote Structure
 
 The actual data in the stream is JSON-like, and some example quotations might look like the following:
 ``` json
