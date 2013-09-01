@@ -39,7 +39,7 @@ This tool polls the exchange's ticker URL almost every second and stores the rep
 
 Each tool should have a `-h` (--help) switch, printing a short description what it's supposed to do and showing other optional or mandatory arguments. In the ideal case a tool should have optional arguments only, read from the standard input and write to the standard output.
 
-Although not always possible following this philosophy allows for a quick and simple "plumbing" of different tools together in a chain. Mandatory options can in the most cases avoided by using reasonable defaults, e.g.
+Although not always possible following this philosophy allows for a quick and simple "plumbing" of different tools together in a chain. Mandatory options can in the most cases avoided by using reasonable defaults, for example
 ``` sh
 $ ./py ticker -h
 usage: ticker.py [-h] [-v] [-i INTERVAL] [-u URL]
