@@ -31,9 +31,9 @@ This composition is true for the initial, unprocessed quote stream: Except for `
 
 ## Tool Chain
 
-Let's start with the most basic operation: Asking the exchange for quotes and recording them for later usage into a file. You do this with the `ticker.py` tool:
+Let's start with the most basic operation: Asking the exchange for quotes and recording them for later usage into a file. You do this with the `ticker` tool:
 ``` sh
-$ ./py ticker.py -v > log/ticks.log
+$ ./py ticker -v > log/ticks.log
 ```
 This tool polls the exchange's ticker URL almost every second and stores the reported quotes in `log/ticks.log`; plus thanks to the `-v` (--verbose) switch the quotes are also printed on the terminal.
 
