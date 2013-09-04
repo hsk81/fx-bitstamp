@@ -107,7 +107,7 @@ $ ./py zmq.sub | ./py interpolate -i 1.000 | ./py reduce.diff -p log -n 600 | ./
 ```
 For reasons to explained later we *repeat* the previous calculation, but this time our interpolation interval is 1.0 second, and we store the volatility in `rhs-vola`. The following image shows the effect of changing the interpolation interval and calculating the corresponding volatilities:
 
-![Logs, Returns & Volatilies](http://db.tt/Vo7Ls9tp "Logarithms, Returns and Volatilities")
+![Logs, Returns & Volatilies](http://db.tt/UlvQmFKH "Logarithms, Returns and Volatilities")
 
 The plot shows the logarithm, return and volatility for *three* different interpolation interval values: Two of them are similar, but one is quite distinct. The observed effect is an apparent shift relative to each other. This makes sense since the larger the interpolation interval, the fewer the number of homogeneous ticks (since we sample less), and therefore the corresponding curves lag behind the ones with the smaller interpolation intervals.
 
