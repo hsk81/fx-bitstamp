@@ -235,7 +235,7 @@ and
 ``` sh
 $ ./py zmq.sub -a 'ipc:///tmp/8888' | ./py interpolate -i 6.0 | ./py reduce.diff -p log -n 100 | ./py reduce.vola -p diff -n 100 | ./py alias -m vola rhs-vola | ./py zmq.push -a "ipc:///tmp/9999" > /dev/null
 ```
-which again use the IPC protocol instead of TCP; by interpolating less (`5` or `6` seconds) we gained some significant performance. Further, we used the following tool chain
+which again use the IPC protocol instead of TCP; by interpolating less (every `5` or `6` seconds) we gained some significant performance. Further, we used the following tool chain
 
 ``` sh
 ./py zmq.pull -a 'ipc:///tmp/7777' -a 'ipc:///tmp/9999' | ./py interleave.div -p lhs-vola rhs-vola | grep "rhs-vola" | ./py alias -m rhs-vola vola | ./py map.exp -p log | ./py map.now -r now | ./py filter -i timestamp now | ./py reduce.diff -p now -r dt > /tmp/dt.log
