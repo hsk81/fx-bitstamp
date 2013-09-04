@@ -121,7 +121,7 @@ First with `zmq.sub` we subscribe to *both* streams at `tcp://127.0.0.1:7777` an
 
 The `reduce.div` divides the `lhs-vola` with `rhs-vola` values; since these two volatilities are slightly off from each other (due to different interpolations), we actually end up calculating a **trend indicator**: If the ratio is higher than one we have a positive or negative trend, if it hovers around one there is no trend, and if it is less then one then we should observe a mean reverting behavior. The following figure shows this quite clearly:
 
-![Ratio Plot](http://db.tt/iDQNvyLK "USD Price (B), Log Returns (R), PnL Percent (C), Volatility Ratio (M), BTC & USD Account (M&Y), Volatility (G)")
+![Ratio Plot](http://db.tt/iDQNvyLK "USD Price [B], Log Returns [R], PnL Percent [C], Volatility Ratio [M], BTC & USD Account [M&Y], Volatility [G]")
 
 The figure shows a period of about 30 days, and has the following sub-plots charted:
 
@@ -167,11 +167,9 @@ Finally, we print verbosely again the quote stream on the terminal, *and* we sto
 ### Cat, Exponentiate, and Alpha Sim
 
 Now it's time to run a simulation to test and analyze a relatively simple strategy:
-
 ```
 $ cat data/lrv-ratio.log | ./py map.exp -p log | ./py trade.alpha -v > data/alpha.log
 ```
-
 First, we access our stored (and processed) quote stream via the UNIX command `cat` and exponentiate the `last` entry the get the original `price`, which we also need in the decision process of our trading strategy. The input to `trade.alpha` looks then like:
 
 ``` json
