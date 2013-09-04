@@ -188,7 +188,7 @@ So, we have now the following components of a quote:
 
 Our trading strategy is simple and has only two rules:
 
-1. If there is a strong trend (ratio > 1.75) then either buy Bitcoins for a positive trend or sell them for a negative one. For each trade use only 1/1000 of your current account balance.
+1. If there is a strong trend (ratio > 2.50) then either buy Bitcoins for a positive trend or sell them for a negative one. For each trade use only 1/1000 of your current account balance.
 
 2. If there is a weak or no trend (ratio < 1.25) then sell Bitcoins; again use only 1/1000 of the current account balance per trade.
 
@@ -203,10 +203,10 @@ Since we know now how this particular strategy works, let's analyze it's perform
 Another important point to mention are the *fees*: The above plots and performance returns are the results of a simulation with a fee rate of 20/1000. The overall performance at the end of 30 days is strongly dependent on the fee structure:
 
 ```
-Fee % | .050  .045  .040 .035 .030 .025 .020 .015 0.010 0.005 0.000
-PnL % |-.600 -.400 -.200 .000 .200 .400 .600 .800 1.000 1.200 1.400
+Fee % | 0.500  0.400  0.300  0.200  0.100  0.000
+PnL % |-0.427 -0.190 +0.048 +0.286 +0.525 +0.765
 ```
-Interestingly the 30-day PnL seems to depend *linearly* on the fee. Break even is achieved at a fee rate of 0.35 percent: Bitstamp.net allows you trade depending on your monthly volume as low as 0.22 percent, therefore based on this simple analysis a monthly return of 0.5 percent seems quite reasonable.
+Interestingly the 30-day PnL seems to depend *linearly* on the fee. Break even is achieved somewhere between a fee rate of 0.30 and 0.40 percent: Bitstamp.net allows you trade depending on your monthly volume as low as 0.22 percent, therefore based on this simple analysis a monthly return of 0.25 percent seems quite reasonable.
 
 But of course 30 days of data does not tell us a lot! This analysis could e.g. be enhanced by using Monte Carlo simulations which would create time series which would qualitatively correspond to our price history. For each of these "alternate realities" we'd run our trading strategy and see how its profits/losses change.
 
