@@ -225,7 +225,7 @@ The measurement were taken using an optimized chain of tool chains:
 ``` sh
 $ head -n 8192 /tmp/ticks.log | ./py filter -e high low -e bid ask -e volume | ./py map.float -p last | ./py map.log -p last | ./py sim -a 0.001 | ./py zmq.pub -a 'ipc:///tmp/8888' > /dev/null
 ```
-We copied our ticks to the `/tmp` folder to ensure they reside in RAM and we used the `ipc:///tmp/8888` UNIX socket for interprocess communication (instead of TCP); the effect of both of these changes were not measurable though. We take measurement only for the first `8192` quotes. Then we started the (modified) interpolation tool chains
+We copied our ticks to the `/tmp` folder to ensure they reside in RAM and we used the `ipc:///tmp/8888` UNIX socket for interprocess communication (instead of TCP); the effect of both of these changes were not measurable though. We took measurement only for the first `8192` quotes. Then we started the (modified) interpolation tool chains
 
 ``` sh
 $ ./py zmq.sub -a 'ipc:///tmp/8888' | ./py interpolate -i 5.0 | ./py reduce.diff -p log -n 120 | ./py reduce.vola -p diff -n 120 | ./py alias -m vola lhs-vola | ./py zmq.push -a "ipc:///tmp/7777" > /dev/null
